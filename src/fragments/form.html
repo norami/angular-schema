@@ -1,0 +1,98 @@
+<div id="string" class="row">
+    <scl-include fragment="#fieldTitle"></scl-include>
+    <div class="col-sm-4">
+        <input type="text" ng-model="data"/>
+    </div>
+</div>
+
+<div id="number" class="row">
+    <scl-include fragment="#fieldTitle"></scl-include>
+    <div class="col-sm-4">
+        <input type="number" ng-model="data" step="{{schema.step || 0}}" min="{{schema.minimum}}" max="{{schema.maximum}}"/>
+        <div ng-show="schema.maximum != null && schema.minimum != null">
+            <div ng-model="data" jqw-slider jqw-slider-max="schema.maximum" jqw-slider-min="schema.minimum" step="schema.step || 1" style="width:90%"></div>
+        </div>
+    </div>
+</div>
+
+<div id="integer" class="row">
+    <scl-include fragment="#fieldTitle"></scl-include>
+    <div class="col-sm-4">
+        <input type="number" ng-model="data" step="{{schema.step || 0}}" min="{{schema.minimum}}" max="{{schema.maximum}}"/>
+    </div>
+</div>
+
+
+<div id="Date" class="row">
+    <scl-include fragment="#fieldTitle"></scl-include>
+    <div class="col-sm-4">
+        <input jqw-datepicker ng-model="data"/>
+    </div>
+</div>
+
+
+<div id="boolean" class="row">
+    <scl-include fragment="#fieldTitle"></scl-include>
+    <div class="col-sm-4">
+        <input type="checkbox"/>
+    </div>
+</div>
+
+<div id="enum" class="row" ng-show="!schema.hidden">
+    <scl-include fragment="#fieldTitle"></scl-include>
+    <div class="col-sm-4">
+        <select
+                ng-model="data"
+                ng-options="d.value as d.name for d in schema.enum">
+        </select>
+    </div>
+</div>
+
+<div id="array" class="panel panel-primary">
+    <div class="panel-heading">
+        <span class="panel-title"> {{schema.displayName || schema.name}}:
+            <scl-include fragment="#addItem"></scl-include>
+            <scl-include fragment="#removeItem"></scl-include>
+        </span>
+    </div>
+    <div class="panel-body" ng-show="data.length">
+        <div ui-sortable="{}" ng-model="data">
+            <div ng-repeat="elementData in data track by $index">
+                <scl-schema scl-binding-data="data[$index]" scl-binding-schema="schema.element"></scl-schema>
+            </div>
+        </div>
+        <scl-include fragment="#addItem"></scl-include>
+    </div>
+</div>
+
+
+<div id="object" class="panel panel-primary">
+    <div class="panel-heading">
+        <span class="panel-title"> {{schema.displayName || schema.name}}:
+            <scl-include fragment="#removeItem"></scl-include>
+        </span>
+    </div>
+    <div class="panel-body">
+        <div ng-repeat="fieldSchema in schema.fields">
+            <scl-schema scl-binding-data="data[fieldSchema.name]" scl-binding-schema="fieldSchema"></scl-schema>
+        </div>
+    </div>
+</div>
+
+<span id="fieldTitle">
+    <div class="col-sm-3">
+        {{schema.displayName || schema.name}}
+        <scl-include fragment="#removeItem"></scl-include>
+    </div>
+</span>
+
+<span id="removeItem">
+    <button type="button" class="btn btn-default btn-xs" style="border-radius: 5px;font-size:6px;padding:3px;" ng-click="removeThisItem()" ng-show="isArrayElement()" >
+        <span class="glyphicon glyphicon-trash"></span>
+    </button>
+</span>
+<span id="addItem">
+    <button type="button" class="btn btn-default btn-xs" style="border-radius: 5px;font-size:3px;padding:3px;" ng-click="addItem()">
+        <span class="glyphicon glyphicon-plus"></span>
+    </button>
+</span>

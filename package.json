@@ -1,0 +1,23 @@
+{
+    "name": "angular-schema",
+    "version": "0.0.0",
+    "description": "Provide a directive for schema dependent view",
+    "author": "https://github.com/norami/angular-schema/graphs/contributors",
+    "license": "MIT",
+    "homepage": "http://norami.github.com/angular-schema",
+    "main": "./dist/angular-schema.js",
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "grunt-contrib-concat": "~0.4.0",
+        "grunt-contrib-copy": "~0.5.0",
+        "grunt-contrib-jshint": "~0.2.0",
+        "grunt-contrib-uglify": "~0.5.0",
+        "grunt-conventional-changelog": "~1.0.0",
+        "grunt-karma": "~0.4.3"
+    },
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/norami/angular-jquery-wrapper.git"
+    }
+}
