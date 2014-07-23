@@ -99,7 +99,7 @@
     </div></div>
     <div class="panel-body">
         <div ng-repeat="fieldSchema in schema.fields">
-            <scl-schema scl-binding-data="data[fieldSchema.name]" scl-binding-schema="fieldSchema" ng-if="!fieldSchema.hidden"></scl-schema>
+            <scl-schema scl-binding-data="data[fieldSchema.name]" scl-binding-schema="fieldSchema" ng-show="!fieldSchema.hidden"></scl-schema>
         </div>
     </div>
 </div>
