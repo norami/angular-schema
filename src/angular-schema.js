@@ -91,21 +91,23 @@
         return createHandler[createHandler.hasOwnProperty(schema.type)  ? schema.type : 'default'](schema);
     }
     function resolveSchema(schema, definition, type) {
-        var ref = type || schema.$ref;
-        if (ref && !definition[ref]) {
-            throw ('schema error ' + ref + ' undefined');
+        var baseSchema = type || schema.$extends;
+        if (baseSchema && !definition[baseSchema]) {
+            throw ('schema error ' + baseSchema + ' undefined');
         }
-        if (ref) {
-            logging.resolve('schema resolved ', ref, definition[ref]);
+        if (baseSchema) {
+//            logging.resolve('schema resolved(1) ', baseSchema, definition[baseSchema], schema);
+            schema =  extendEx(true, {}, resolveSchema(definition[baseSchema], definition), schema);
+//            logging.resolve('schema resolved(2) ', schema);
         }
-        return ref ? extendEx(true, {}, resolveSchema(definition[ref], definition), schema) : schema;
+        return schema;
     }
     var logging = {
             create: function () {
                 // onsole.log.apply(console, arguments);
             },
             resolve: function () {
-                // console.log.apply(console, arguments);
+                console.log.apply(console, arguments);
             }
         },
         createHandler = {
@@ -135,15 +137,25 @@
             createObject: createObject,
             resolveSchema: resolveSchema,
             // 親階層のデータと、この階層のデータから、この階層の$definition, schemaを求める
-            merge: function (parent, current, type) {
+            merge: function (current, parent, update, type) {
                 // 親階層のdefinitionと、この階層のdefinitionをマージする
-                var definition = $.extend({}, parent.$definition, current.$definition),
+                var definition = $.extend({}, parent.$definition, update.$definition),
                 // definitionとこの階層のschemaをマージする
-                    schema = resolveSchema(current, definition, type);
-                return {
+                    schema = resolveSchema(update, definition, current.data && current.data.$type);
+                $.extend(current, {
                     $definition: definition,
                     schema: schema
-                };
+                });
+                if (schema.fields) {
+                    angular.forEach(schema.fields, function (field) {
+                        if (!current.hasOwnProperty('data') || typeof current.data !== 'object') {
+                            current.data = {};
+                        }
+                        if (field.defaultValue && current.data && !current.data.hasOwnProperty(field.name)) {
+                            current.data[field.name] = field.defaultValue;
+                        }
+                    });
+                }
             },
             // 配列スキーマを持つ現在階層データからのオブジェクトを作る
             create: function (current) {
@@ -158,7 +170,6 @@
                 if (current.schema.enum && current.schema.enum.length) {
                     return 'enum';
                 }
-                console.log(current, current.schema, current.schema.type, current.schema.name);
                 return current.schema.type;
             }
         }
@@ -241,20 +252,22 @@
                                         viewType,
                                         contents;
                                     if (!bindSchema) { return; }
-                                    $.extend(childScope, $.schemalib.merge(scope, bindSchema, childScope.data && childScope.data.$type));
+                                    $.schemalib.merge(childScope, scope, bindSchema, childScope.data && childScope.data.$type);
                                     if (!childScope.schema) { return; }
                                     // DOM要素を設定する（fragmentに変化があったときのみ）
-                                    viewType = $.schemalib.getviewType(childScope); //childScope.schema.enum && childScope.schema.enum.length ? 'enum' : childScope.schema.type;
-                                    console.log(childScope, viewType);
+                                    viewType = childScope.schema.enum && childScope.schema.enum.length ? 'enum' : childScope.schema.type;
                                     if (oldViewType !== viewType) {
-                                        contents = angular.element('<div></div>').html(response).find('#' + viewType);
-                                        if (contents.length === 0) {
-                                            console.log(childScope, viewType);
-                                            throw 'viewType not found "' + viewType + '"';
+                                        if (viewType) {
+                                            contents = angular.element('<div></div>').html(response).find('#' + viewType);
+                                            if (contents.length === 0) {
+                                                console.log('viewType not found "' + viewType + '"');
+                                                return;
+                                            }
+                                        } else {
+                                            contents = '';
                                         }
                                         $compile(contents)(childScope);
                                         element.html(contents);
-
                                     }
                                     oldViewType = viewType;
                                     // valueExpression機能による値の自動設定

@@ -15,7 +15,7 @@
         <script src="../bower_components/angular/angular.js"></script>
         <script src="../bower_components/angular-ui-sortable/sortable.js"></script>
         <script src="../bower_components/angular-jquery-wrapper/dist/angular-jquery-wrapper.js"></script>
-
+        <script src="../bower_components/ng-prettyjson/dist/ng-prettyjson.min.js"></script>
         <!--<script src="../lib/jquery.classlib.js"></script>-->
         <script src="../src/angular-schema.js"></script>
         <script src="../src/demo.js"></script>
@@ -78,14 +78,19 @@
             <article ng-app="App" >
 
                 <section ng-controller="FormController" class="row">
-                    schema:{{schema}}
-                    <div class="col-sm-4">
+                    <div ng-click="flagSchema = !flagSchema">schema<div ng-show="flagSchema">
+                        <pretty-json json="schema"></pretty-json>
+                    </div></div>
+                    <div ng-click="flagData = !flagData">data<div ng-show="flagData">
+                        <pretty-json json="data"></pretty-json>
+                    </div></div>
+                    <div class="col-sm-6">
                         <scl-schema src="../src/fragments/form.html" scl-binding-data="schema" scl-binding-schema="metaschema"></scl-schema>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <scl-schema src="../src/fragments/form.html" scl-binding-data="data" scl-binding-schema="schema"></scl-schema>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <scl-schema src="../src/fragments/form.html" scl-binding-data="data" scl-binding-schema="schema"></scl-schema>
                     </div>
 

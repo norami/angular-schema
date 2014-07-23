@@ -1,13 +1,13 @@
 <div id="string" class="row">
     <scl-include fragment="#fieldTitle"></scl-include>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
         <input type="text" ng-model="data"/>
     </div>
 </div>
 
 <div id="number" class="row">
     <scl-include fragment="#fieldTitle"></scl-include>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
         <input type="number" ng-model="data" step="{{schema.step || 0}}" min="{{schema.minimum}}" max="{{schema.maximum}}"/>
         <div ng-show="schema.maximum != null && schema.minimum != null">
             <div ng-model="data" jqw-slider jqw-slider-max="schema.maximum" jqw-slider-min="schema.minimum" step="schema.step || 1" style="width:90%"></div>
@@ -17,7 +17,7 @@
 
 <div id="integer" class="row">
     <scl-include fragment="#fieldTitle"></scl-include>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
         <input type="number" ng-model="data" step="{{schema.step || 0}}" min="{{schema.minimum}}" max="{{schema.maximum}}"/>
     </div>
 </div>
@@ -25,7 +25,7 @@
 
 <div id="Date" class="row">
     <scl-include fragment="#fieldTitle"></scl-include>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
         <input jqw-datepicker ng-model="data"/>
     </div>
 </div>
@@ -33,14 +33,27 @@
 
 <div id="boolean" class="row">
     <scl-include fragment="#fieldTitle"></scl-include>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
         <input type="checkbox"/>
     </div>
 </div>
 
-<div id="enum" class="row" ng-show="!schema.hidden">
+<div id="set" class="row">
     <scl-include fragment="#fieldTitle"></scl-include>
-    <div class="col-sm-4">
+    <div class="col-sm-6">
+        <select
+                ng-model="data"
+                ng-options="d.value as d.name for d in schema.enum"
+                multiple="multiple"
+        >
+        </select>m
+    </div>
+</div>
+
+
+<div id="enum" class="row">
+    <scl-include fragment="#fieldTitle"></scl-include>
+    <div class="col-sm-6">
         <select
                 ng-model="data"
                 ng-options="d.value as d.name for d in schema.enum">
@@ -55,6 +68,12 @@
             <scl-include fragment="#removeItem"></scl-include>
         </span>
     </div>
+    <div ng-click="flagSchema = !flagSchema">schema<div ng-show="flagSchema">
+        <pretty-json json="schema"></pretty-json>
+    </div></div>
+    <div ng-click="flagData = !flagData">data<div ng-show="flagData">
+        <pretty-json json="data"></pretty-json>
+    </div></div>
     <div class="panel-body" ng-show="data.length">
         <div ui-sortable="{}" ng-model="data">
             <div ng-repeat="elementData in data track by $index">
@@ -72,9 +91,15 @@
             <scl-include fragment="#removeItem"></scl-include>
         </span>
     </div>
+    <div ng-click="flagSchema = !flagSchema">schema<div ng-show="flagSchema">
+        <pretty-json json="schema"></pretty-json>
+    </div></div>
+    <div ng-click="flagData = !flagData">data<div ng-show="flagData">
+        <pretty-json json="data"></pretty-json>
+    </div></div>
     <div class="panel-body">
         <div ng-repeat="fieldSchema in schema.fields">
-            <scl-schema scl-binding-data="data[fieldSchema.name]" scl-binding-schema="fieldSchema"></scl-schema>
+            <scl-schema scl-binding-data="data[fieldSchema.name]" scl-binding-schema="fieldSchema" ng-if="!fieldSchema.hidden"></scl-schema>
         </div>
     </div>
 </div>

@@ -2,10 +2,10 @@
 
 (function (angular) {
     'use strict';
-    var app = angular.module("App", ['ui.sortable', 'jqueryWrapper', 'schemalib']);
+    var app = angular.module("App", ['ui.sortable', 'jqueryWrapper', 'schemalib', 'ngPrettyJson']);
     app.controller("FormController", function ($scope) {
         $scope.metaschema = {
-            $ref: 'schema',
+            $extends: 'schema',
             $definition: {
                 schema: {
                     name: 'schema',
@@ -22,6 +22,7 @@
                                 {name: '数値', value: 'number'},
                                 {name: 'オブジェクト', value: 'object'},
                                 {name: '配列', value: 'array'},
+                                {name: '集合', value: 'set'},
                                 {name: '日付', value: 'Date'}
                             ],
                             defaultValue: 'schema'
@@ -40,26 +41,26 @@
                             name: 'type', // htmlに指定されるタイプ
                             displayName: 'データ型',
                             type: 'string',
-                            enum: [
-                                {name: '真偽値', value: 'boolean'},
-                                {name: '文字列', value: 'string'},
-                                {name: '整数', value: 'integer'},
-                                {name: '数値', value: 'number'},
-                                {name: 'オブジェクト', value: 'object'},
-                                {name: '配列', value: 'array'}
-                            ],
+//                            enum: [
+//                                {name: '真偽値', value: 'boolean'},
+//                                {name: '文字列', value: 'string'},
+//                                {name: '整数', value: 'integer'},
+//                                {name: '数値', value: 'number'},
+//                                {name: 'オブジェクト', value: 'object'},
+//                                {name: '配列', value: 'array'}
+//                            ],
                             hidden : true,
                             valueExpression: '$type'
                         }
                     ]
                 },
                 boolean: {
-                    $ref: 'schema',
+                    $extends: 'schema',
                     name: 'boolean',
                     type: 'object'
                 },
                 number: {
-                    $ref: 'schema',
+                    $extends: 'schema',
                     name: 'number',
                     type: 'object',
                     fields: [
@@ -76,7 +77,7 @@
                                     },
                                     {
                                         name: 'value',
-                                        type: 'number'
+                                        type: 'string'
                                     }
                                 ]
                             }
@@ -96,7 +97,7 @@
                     ]
                 },
                 integer: {
-                    $ref: 'schema',
+                    $extends: 'schema',
                     name: 'integer',
                     type: 'object',
                     fields: [
@@ -129,7 +130,7 @@
                     ]
                 },
                 string: {
-                    $ref: 'schema',
+                    $extends: 'schema',
                     name: 'string',
                     type: 'object',
                     fields: [
@@ -154,7 +155,7 @@
                     ]
                 },
                 object: {
-                    $ref: 'schema',
+                    $extends: 'schema',
                     name: 'object',
                     type: 'object',
                     fields: [
@@ -163,24 +164,35 @@
                             name: 'fields',
                             type: 'array',
                             element: {
-                                $ref: 'schema'
+                                $extends: 'schema'
                             }
                         }
                     ]
                 },
                 array: {
-                    $ref: 'schema',
+                    $extends: 'schema',
                     name: 'array',
                     type: 'object',
                     fields: [
                         {
                             name: 'element',
-                            $ref: 'schema'
+                            $extends: 'schema'
+                        }
+                    ]
+                },
+                set: {
+                    $extends: 'schema',
+                    name: 'set',
+                    type: 'object',
+                    fields: [
+                        {
+                            name: 'element',
+                            $extends: 'schema'
                         }
                     ]
                 },
                 Date: {
-                    $ref: 'schema',
+                    $extends: 'schema',
                     name: 'Date',
                     type: 'object'
                 }
