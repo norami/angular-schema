@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="../bower_components/jquery-ui/themes/smoothness/jquery-ui.css" />
         <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.css"/>
+        <link rel="stylesheet" href="../bower_components/chosen/chosen.css"/>
+
         <script src="../bower_components/jquery/dist/jquery.js"></script>
         <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <script src="../bower_components/jquery-ui/jquery-ui.js"></script>
@@ -16,6 +18,8 @@
         <script src="../bower_components/angular-ui-sortable/sortable.js"></script>
         <script src="../bower_components/angular-jquery-wrapper/dist/angular-jquery-wrapper.js"></script>
         <script src="../bower_components/ng-prettyjson/dist/ng-prettyjson.min.js"></script>
+        <script src="../bower_components/chosen/chosen.jquery.js"></script>
+        <script src="../bower_components/angular-chosen-localytics/chosen.js"></script>
         <!--<script src="../lib/jquery.classlib.js"></script>-->
         <script src="../src/angular-schema.js"></script>
         <script src="../src/demo.js"></script>
@@ -44,6 +48,11 @@
     }
     .panel-heading{
     padding:2px 10px
+    }
+    @media (min-width: 1600px) {
+        .container {
+            width: 1580px;
+        }
     }
 </style>
     </head>
@@ -78,10 +87,10 @@
             <article ng-app="App" >
 
                 <section ng-controller="FormController" class="row">
-                    <div ng-click="flagSchema = !flagSchema">schema<div ng-show="flagSchema">
+                    <div ng-click="flagSchemaHeader = !flagSchemaHeader">schema<div ng-if="flagSchemaHeader">
                         <pretty-json json="schema"></pretty-json>
                     </div></div>
-                    <div ng-click="flagData = !flagData">data<div ng-show="flagData">
+                    <div ng-click="flagDataHeader = !flagDataHeader">data<div ng-if="flagDataHeader">
                         <pretty-json json="data"></pretty-json>
                     </div></div>
                     <div class="col-sm-6">

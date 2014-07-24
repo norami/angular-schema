@@ -34,7 +34,7 @@
 <div id="boolean" class="row">
     <scl-include fragment="#fieldTitle"></scl-include>
     <div class="col-sm-6">
-        <input type="checkbox"/>
+        <input type="checkbox" ng-model="data"/>
     </div>
 </div>
 
@@ -42,11 +42,11 @@
     <scl-include fragment="#fieldTitle"></scl-include>
     <div class="col-sm-6">
         <select
-                ng-model="data"
-                ng-options="d.value as d.name for d in schema.enum"
-                multiple="multiple"
+                multiple chosen ng-model="data"
+                ng-options="d.value as d.name for d in schema.element.enum"
+                style="width:100%"
         >
-        </select>m
+        </select>
     </div>
 </div>
 

@@ -2,7 +2,7 @@
 
 (function (angular) {
     'use strict';
-    var app = angular.module("App", ['ui.sortable', 'jqueryWrapper', 'schemalib', 'ngPrettyJson']);
+    var app = angular.module("App", ['ui.sortable', 'jqueryWrapper', 'schemalib', 'ngPrettyJson', 'localytics.directives']);
     app.controller("FormController", function ($scope) {
         $scope.metaschema = {
             $extends: 'schema',
@@ -269,12 +269,26 @@
                         }
                     },
                     {
-                        name: 'tags',
+                        name: 'keywords',
                         $type: 'array',
+                        element: {
+                            name: 'keyword',
+                            $type: 'string',
+                            type: 'string'
+                        }
+                    },
+                    {
+                        name: 'tags',
+                        $type: 'set',
                         element: {
                             name: 'tag',
                             $type: 'string',
-                            type: 'string'
+                            type: 'string',
+                            enum: [
+                                {name: 'AngularJS', value: 'AngularJS'},
+                                {name: 'javascript', value: 'javascript'},
+                                {name: 'web', value: 'web'}
+                            ]
                         }
                     }
                 ]

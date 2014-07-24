@@ -104,7 +104,7 @@
     }
     var logging = {
             create: function () {
-                // onsole.log.apply(console, arguments);
+                // console.log.apply(console, arguments);
             },
             resolve: function () {
                 console.log.apply(console, arguments);
@@ -148,11 +148,11 @@
                 });
                 if (schema.fields) {
                     angular.forEach(schema.fields, function (field) {
-                        if (!current.hasOwnProperty('data') || typeof current.data !== 'object') {
+                        if (typeof current.data !== 'object') {
                             current.data = {};
                         }
-                        if (field.defaultValue && current.data && !current.data.hasOwnProperty(field.name)) {
-                            current.data[field.name] = field.defaultValue;
+                        if (current.data && !current.data.hasOwnProperty(field.name)) {
+                            current.data[field.name] = field.defaultValue || null;
                         }
                     });
                 }

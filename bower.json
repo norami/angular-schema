@@ -25,6 +25,7 @@
     "angular-jquery-wrapper": "~0.0.0",
     "angular-ui-sortable": "~0.12.8",
     "angular-ui-utils": "~0.1.1",
-    "ng-prettyjson": "~0.1.1"
+    "ng-prettyjson": "~0.1.1",
+    "angular-chosen-localytics": "~1.0.6"
   }
 }
