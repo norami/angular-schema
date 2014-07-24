@@ -9,7 +9,7 @@
     <scl-include fragment="#fieldTitle"></scl-include>
     <div class="col-sm-6">
         <input type="number" ng-model="data" step="{{schema.step || 0}}" min="{{schema.minimum}}" max="{{schema.maximum}}"/>
-        <div ng-show="schema.maximum != null && schema.minimum != null">
+        <div ng-if="schema.maximum != null && schema.minimum != null">
             <div ng-model="data" jqw-slider jqw-slider-max="schema.maximum" jqw-slider-min="schema.minimum" step="schema.step || 1" style="width:90%"></div>
         </div>
     </div>
@@ -19,6 +19,9 @@
     <scl-include fragment="#fieldTitle"></scl-include>
     <div class="col-sm-6">
         <input type="number" ng-model="data" step="{{schema.step || 0}}" min="{{schema.minimum}}" max="{{schema.maximum}}"/>
+        <div ng-if="schema.maximum != null && schema.minimum != null">
+            <div ng-model="data" jqw-slider jqw-slider-max="schema.maximum" jqw-slider-min="schema.minimum" step="schema.step || 1" style="width:90%"></div>
+        </div>
     </div>
 </div>
 
@@ -42,7 +45,9 @@
     <scl-include fragment="#fieldTitle"></scl-include>
     <div class="col-sm-6">
         <select
-                multiple chosen ng-model="data"
+                chosen
+                multiple
+                ng-model="data"
                 ng-options="d.value as d.name for d in schema.element.enum"
                 style="width:100%"
         >
