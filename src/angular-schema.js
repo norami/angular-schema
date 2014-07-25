@@ -3,7 +3,16 @@
 
 (function ($) {
     'use strict';
-
+    var logging = {
+            create: function () {
+                // console.log.apply(console, arguments);
+            },
+            resolve: function () {
+                console.log.apply(console, arguments);
+            }
+        },
+        createHandler,
+        sanitizeHandler;
     // function extendEx
     // jQuery.extendに配列同士のマージ機能を追加する。
     // 配列を見つけた場合、基本的にはconcatenateするが、配列の要素がオブジェクトでありname属性を持つ場合は、ディープextendをする。
@@ -87,8 +96,8 @@
         // Return the modified object
         return target;
     }
-    function createObject(schema) {
-        return createHandler[createHandler.hasOwnProperty(schema.type)  ? schema.type : 'default'](schema);
+    function createObject(schema, proto) {
+        return createHandler[createHandler.hasOwnProperty(schema.type)  ? schema.type : 'default'](schema, proto);
     }
     function resolveSchema(schema, definition, type) {
         var baseSchema = type || schema.$extends;
@@ -102,35 +111,47 @@
         }
         return schema;
     }
-    var logging = {
-            create: function () {
-                // console.log.apply(console, arguments);
-            },
-            resolve: function () {
-                console.log.apply(console, arguments);
-            }
+
+
+    createHandler = {
+        'object': function (schema, proto) {
+//            if (schema.defaultValue) { return schema.defaultValue; }
+            var response = angular.isObject(proto) ? proto : (schema.defaultValue || {}),
+                fieldMap = {};
+            // 要らないプロパティがないことを確認
+            angular.forEach(schema.fields, function (fieldSchema) {
+                fieldMap[fieldSchema.name] = fieldSchema;
+            });
+            angular.forEach(response, function(value, key){
+                if (!fieldMap.hasOwnProperty(key)) {
+                    delete response[key];
+                }
+            });
+            // 必要なプロパティがあることを確認
+            angular.forEach(schema.fields, function (fieldSchema) {
+                response[fieldSchema.name] = createObject(fieldSchema, response.hasOwnProperty(fieldSchema.name) ? response[fieldSchema.name] : undefined);
+            });
+            logging.create('createObject', response);
+            return response;
         },
-        createHandler = {
-            'object': function (schema) {
-                if (schema.defaultValue) { return schema.defaultValue; }
-                var response = {};
-                angular.forEach(schema.fields, function (obj) {
-                    response[obj.name] = createObject(obj);
+        'array': function (schema, proto) {
+            if (angular.isArray(proto)) {
+                return $.map(proto, function (item) {
+                    return [createObject(schema.element, item)];
                 });
-                logging.create('createObject', response);
-                return response;
-            },
-            'array': function (schema) {
-                return [];
-            },
-            'string': function (schema) {
-                var response = String(schema.defaultValue || "");
-                return response;
-            },
-            'default': function(schema) {
-                return null;
             }
-        };
+            return [];
+        },
+        'string': function (schema, proto) {
+            if (angular.isString(proto)) {
+                return proto;
+            }
+            return String(schema.defaultValue || "");
+        },
+        'default': function(schema, proto) {
+            return proto !== undefined ? proto : null;
+        }
+    };
 
     $.extend({
         'schemalib': {
@@ -146,16 +167,8 @@
                     $definition: definition,
                     schema: schema
                 });
-                if (schema.fields) {
-                    angular.forEach(schema.fields, function (field) {
-                        if (typeof current.data !== 'object') {
-                            current.data = {};
-                        }
-                        if (current.data && !current.data.hasOwnProperty(field.name)) {
-                            current.data[field.name] = field.defaultValue || null;
-                        }
-                    });
-                }
+                current.data = createObject(schema, current.data);
+
             },
             // 配列スキーマを持つ現在階層データからのオブジェクトを作る
             create: function (current) {
@@ -164,9 +177,6 @@
             },
             // 現在階層のデータからviewTypeを得る
             getviewType: function (current) {
-//                if (current.schema.type === 'array' &&  current.schema.element && current.schema.element.enum) {
-//                    return 'enum' + current.schema.type + ',array';
-//                }
                 if (current.schema.enum && current.schema.enum.length) {
                     return 'enum';
                 }
